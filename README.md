@@ -14,7 +14,7 @@ This project will be a work-in-progress, as I'm planning to improve this and add
 - [Iris Bune](https://github.com/irisbune)
 
 ### Info
-Four weeks into our [Codaisseur's](https://github.com/Codaisseur) Web Dev Bootcamp, we had to build a Rails api (JSON) and use ReactJS as the front-end.
+Four weeks into our [Codaisseur's](https://github.com/Codaisseur) Web Dev Bootcamp, we had to build a Rails api (JSON) and use ReactJS as the [front-end](https://github.com/irisbune/Check_projectmanager-front).
 
 The api was build using BDD, using RSpec to test our code.
 The assignment for the back-end was to write at least 2 model specs and 4 controller specs.
