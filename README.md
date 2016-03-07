@@ -17,7 +17,7 @@ This project will be a work-in-progress, as I'm planning to improve this and add
 Four weeks into our [Codaisseur's](https://github.com/Codaisseur) Web Dev Bootcamp, we had to build a Rails api (JSON) and use ReactJS as the front-end.
 
 The api was build using BDD, using RSpec to test our code.
-The assignment for the back-end team, Iris and Khalil, was to write at least 2 model specs and 4 controller specs.
+The assignment for the back-end was to write at least 2 model specs and 4 controller specs.
 We managed to add some tests to validate a task's due dates.
 
 My personal goal is to add more tests to have complete specs for all current existing functionality.
