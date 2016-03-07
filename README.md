@@ -20,4 +20,14 @@ The api was build using BDD, using RSpec to test our code.
 The assignment for the back-end was to write at least 2 model specs and 4 controller specs.
 We managed to add some tests to validate a task's due dates.
 
-My personal goal is to add more tests to have complete specs for all current existing functionality.
+### Todos
+My personal goal is to add:
+- Complete specs for current functionality, incl. views.
+- User Model
+  - Features:
+      - invite users to projects
+      - assign users to tasks
+      - see open & closed tasks per user
+- Comment Model
+  - Features:
+      - comment on tasks
