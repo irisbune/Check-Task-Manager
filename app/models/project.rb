@@ -35,4 +35,8 @@ class Project < ActiveRecord::Base
     return where(start_date: date)
   end
 
+  def self.start_date_filter_range(date_start, date_end)
+    return where(start_date: date_start..date_end)
+  end
+
 end

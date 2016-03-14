@@ -139,7 +139,11 @@ RSpec.describe Project, type: :model do
       end
     end
     context "range" do
-      it "returns a sorted array of projects within the given start date range"
+      it "returns a sorted array of projects within the given start date range" do
+        date_start = Date.new(2016,04,01)
+        date_end = Date.new(2016,04,30)
+        expect(Project.start_date_filter_range(date_start, date_end)).to eq [@project4, @project5]
+      end
     end
   end
 
