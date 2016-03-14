@@ -19,4 +19,16 @@ class Project < ActiveRecord::Base
     return where(status: "open").count
   end
 
+  def self.total_done_projects
+    return where(status: "done").count
+  end
+
+  def self.total_canceled_projects
+    return where(status: "canceled").count
+  end
+
+  def self.taskless_project
+    return includes(:tasks).where(:tasks => {project_id: nil}).count
+  end
+
 end
