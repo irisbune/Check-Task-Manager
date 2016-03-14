@@ -27,8 +27,12 @@ class Project < ActiveRecord::Base
     return where(status: "canceled").count
   end
 
-  def self.taskless_project
+  def self.taskless_projects
     return includes(:tasks).where(:tasks => {project_id: nil}).count
+  end
+
+  def self.start_date_filter(date)
+    return where(start_date: date)
   end
 
 end

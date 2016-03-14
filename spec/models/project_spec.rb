@@ -50,72 +50,97 @@ RSpec.describe Project, type: :model do
     expect(project.errors[:start_date]).to include("format must be yyyy-mm-dd")
   end
 
-  it "gives the total nr of open projects" do
-    project = Project.create(
-      name: "My project",
-      description: "I have to practice RSpec",
-      status: "open",
-      start_date: Date.today
-    )
-    another_project = Project.create(
-      name: "My second project",
-      description: "I have to practice RSpec more more",
-      status: "open",
-      start_date: Date.tomorrow
-    )
-    expect(Project.total_open_projects).to eq 2
+  describe "project status summary" do
+    before :each do
+      project1 = Project.create(
+        name: "My project",
+        description: "I have to practice RSpec",
+        status: "open",
+        start_date: Date.today
+      )
+      project2 = Project.create(
+        name: "My second project",
+        description: "I have to practice RSpec more more",
+        status: "open",
+        start_date: Date.tomorrow
+      )
+      project3 = Project.create(
+        name: "My 3rd project",
+        description: "I have to practice RSpec more more",
+        status: "done",
+        start_date: Date.tomorrow
+      )
+      project4 = Project.create(
+        name: "My 3rd project",
+        description: "I have to practice RSpec more more",
+        status: "canceled",
+        start_date: Date.tomorrow
+      )
+      task1 = project2.tasks.create(
+        task_description: "Something to do",
+        duedate: Date.tomorrow
+      )
+      task2 = project3.tasks.create(
+        task_description: "Something to do",
+        duedate: Date.tomorrow
+      )
+    end
+    it "gives the total nr of open projects" do
+      expect(Project.total_open_projects).to eq 2
+    end
+    it "gives the total nr of done projects" do
+      expect(Project.total_done_projects).to eq 1
+    end
+    it "gives the total nr of canceled projects" do
+      expect(Project.total_canceled_projects).to eq 1
+    end
+    it "gives the total nr of projects without a task" do
+      expect(Project.taskless_projects).to eq 2
+    end
   end
 
-  it "gives the total nr of done projects" do
-    project = Project.create(
-      name: "My project",
-      description: "I have to practice RSpec",
-      status: "done",
-      start_date: Date.today
-    )
-    another_project = Project.create(
-      name: "My second project",
-      description: "I have to practice RSpec more more",
-      status: "open",
-      start_date: Date.tomorrow
-    )
-    expect(Project.total_done_projects).to eq 1
-  end
-
-  it "gives the total nr of canceled projects" do
-    project = Project.create(
-      name: "My project",
-      description: "I have to practice RSpec",
-      status: "canceled",
-      start_date: Date.today
-    )
-    another_project = Project.create(
-      name: "My second project",
-      description: "I have to practice RSpec more more",
-      status: "canceled",
-      start_date: Date.tomorrow
-    )
-    expect(Project.total_canceled_projects).to eq 2
-  end
-
-  it "gives the total nr of projects without a task" do
-    project = Project.create(
-      name: "My project",
-      description: "I have to practice RSpec",
-      status: "open",
-      start_date: Date.today
-    )
-    another_project = Project.create(
-      name: "My second project",
-      description: "I have to practice RSpec more more",
-      status: "open",
-      start_date: Date.tomorrow
-    )
-    another_project_task = another_project.tasks.create(
-      task_description: "Something to do",
-      duedate: Date.tomorrow
-    )
-    expect(Project.taskless_project).to eq 1
+  describe "project start date filter" do
+    before :each do
+      @project1 = Project.create(
+        name: "My project",
+        description: "I have to practice RSpec",
+        status: "open",
+        start_date: Date.today
+      )
+      @project2 = Project.create(
+        name: "My second project",
+        description: "I have to practice RSpec more more",
+        status: "open",
+        start_date: Date.tomorrow
+      )
+      @project3 = Project.create(
+        name: "My 3rd project",
+        description: "I have to practice RSpec more more",
+        status: "done",
+        start_date: Date.tomorrow
+      )
+      @project4 = Project.create(
+        name: "My 3rd project",
+        description: "I have to practice RSpec more more",
+        status: "canceled",
+        start_date: Date.new(2016,04,01)
+      )
+      @project5 = Project.create(
+        name: "My 3rd project",
+        description: "I have to practice RSpec more more",
+        status: "canceled",
+        start_date: Date.new(2016,04,06)
+      )
+    end
+    context "specific" do
+      it "returns an array of matched projects with a specific start date" do
+        date = Date.tomorrow
+        expect(Project.start_date_filter(date)).to eq [@project2, @project3]
+      end
+    end
+    context "range" do
+      it "returns a sorted array of projects within the given start date range"
+    end
   end
 
 
