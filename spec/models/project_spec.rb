@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Project, type: :model do
 
-  it "is valid with a name, description and start date" do
+  it "is valid with a name, description, status and start date" do
     project = Project.new(
       name: "My project",
       description: "I have to practice RSpec",
+      status: "open",
       start_date: Date.today
     )
     expect(project).to be_valid
@@ -15,6 +16,18 @@ RSpec.describe Project, type: :model do
     project = Project.new(name: nil)
     project.valid?
     expect(project.errors[:name]).to include("can't be blank")
+  end
+
+  it "is invalid without a status" do
+    project = Project.new(status: nil)
+    project.valid?
+    expect(project.errors[:status]).to include("can't be blank")
+  end
+
+  it "is invalid when status isn't 'open', 'done' or 'canceled'" do
+    project = Project.new(status: "draft")
+    project.valid?
+    expect(project.errors[:status]).to include("is not a valid status")
   end
 
   it "is invalid without a start date" do
@@ -37,7 +50,23 @@ RSpec.describe Project, type: :model do
     expect(project.errors[:start_date]).to include("format must be yyyy-mm-dd")
   end
 
-  it "has an has_many association with tasks"
+  it "gives the total nr of active projects" do
+    project = Project.create(
+      name: "My project",
+      description: "I have to practice RSpec",
+      status: "open",
+      start_date: Date.today
+    )
+    another_project = Project.create(
+      name: "My second project",
+      description: "I have to practice RSpec more more",
+      status: "open",
+      start_date: Date.tomorrow
+    )
+    expect(Project.total_open_projects).to eq 2
+  end
+
+  it "gives the total nr of projects without a task"
 
 
 end
