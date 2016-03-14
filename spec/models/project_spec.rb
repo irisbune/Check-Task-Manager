@@ -6,7 +6,7 @@ RSpec.describe Project, type: :model do
     project = Project.new(
       name: "My project",
       description: "I have to practice RSpec",
-      start_date: "2016/03/14"
+      start_date: Date.today
     )
     expect(project).to be_valid
   end
@@ -26,11 +26,17 @@ RSpec.describe Project, type: :model do
   it "cannot have a start date in the past" do
     date = Date.yesterday
     project = Project.new(start_date: date)
-    project.valid_start_date
-    expect(project.errors[:start_date]).to include("Start date can't be in the past")
+    project.valid_start_date?
+    expect(project.errors[:start_date]).to include("can't be in the past")
   end
 
-  it "has a valid date when the format is mm/dd/yyyy"
+  it "has a valid date when the format is yyyy-mm-dd" do
+    date = "20 april"
+    project = Project.new(start_date: date)
+    project.valid?
+    expect(project.errors[:start_date]).to include("format must be yyyy-mm-dd")
+  end
+
   it "has an has_many association with tasks"
 
 
