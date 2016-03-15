@@ -30,6 +30,9 @@ class Project < ActiveRecord::Base
   def self.taskless_projects
     # return includes(:tasks).where(:tasks => {project_id: nil}).count
     # return joins("LEFT OUTER JOIN tasks ON tasks.project_id = projects.id").where("tasks.project_id IS NULL").count
+
+    # pluck() returns an array of values from the specified column(s), in this case project_id from the tasks table.
+    # The total count of project id's that do not exist in this array are returned
     return where.not(id: Task.pluck(:project_id)).count
   end
 
