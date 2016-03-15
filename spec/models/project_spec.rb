@@ -2,36 +2,46 @@ require 'rails_helper'
 
 RSpec.describe Project, type: :model do
 
-  it "is valid with a name, description, status and start date" do
-    project = Project.new(
-      name: "My project",
-      description: "I have to practice RSpec",
-      status: "open",
-      start_date: Date.today
-    )
-    expect(project).to be_valid
+  # it "is valid with a name, description, status and start date" do
+  #   project = Project.new(
+  #     name: "My project",
+  #     description: "I have to practice RSpec",
+  #     status: "open",
+  #     start_date: Date.today
+  #   )
+  #   expect(project).to be_valid
+  # end
+
+  it "has a valid Factory" do
+    # rails_helper includes FactoryGirl syntax config so we can just use build(:factory)
+    # as opposed to FactoryGirl.build(:factory)
+    expect(build(:project)).to be_valid
   end
 
   it "is invalid without a name" do
-    project = Project.new(name: nil)
+    # project = Project.new(name: nil)
+    project = build(:project, name: nil)
     project.valid?
     expect(project.errors[:name]).to include("can't be blank")
   end
 
   it "is invalid without a status" do
-    project = Project.new(status: nil)
+    # project = Project.new(status: nil)
+    project = build(:project, status: nil)
     project.valid?
     expect(project.errors[:status]).to include("can't be blank")
   end
 
   it "is invalid when status isn't 'open', 'done' or 'canceled'" do
-    project = Project.new(status: "draft")
+    # project = Project.new(status: "draft")
+    project = build(:project, status: "draft")
     project.valid?
     expect(project.errors[:status]).to include("is not a valid status")
   end
 
   it "is invalid without a start date" do
-    project = Project.new(start_date: nil)
+    # project = Project.new(start_date: nil)
+    project = build(:project, start_date: nil)
     project.valid?
     expect(project.errors[:start_date]).to include("can't be blank")
   end
