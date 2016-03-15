@@ -53,7 +53,7 @@ RSpec.describe Project, type: :model do
   describe "project status summary" do
     before :each do
       project1 = Project.create(
-        name: "My project",
+        name: "No tasks",
         description: "I have to practice RSpec",
         status: "open",
         start_date: Date.today
@@ -71,7 +71,7 @@ RSpec.describe Project, type: :model do
         start_date: Date.tomorrow
       )
       project4 = Project.create(
-        name: "My 3rd project",
+        name: "Another no tasks",
         description: "I have to practice RSpec more more",
         status: "canceled",
         start_date: Date.tomorrow
@@ -81,6 +81,10 @@ RSpec.describe Project, type: :model do
         duedate: Date.tomorrow
       )
       task2 = project3.tasks.create(
+        task_description: "Something to do",
+        duedate: Date.tomorrow
+      )
+      task3 = project3.tasks.create(
         task_description: "Something to do",
         duedate: Date.tomorrow
       )

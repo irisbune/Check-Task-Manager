@@ -28,7 +28,9 @@ class Project < ActiveRecord::Base
   end
 
   def self.taskless_projects
-    return includes(:tasks).where(:tasks => {project_id: nil}).count
+    # return includes(:tasks).where(:tasks => {project_id: nil}).count
+    # return joins("LEFT OUTER JOIN tasks ON tasks.project_id = projects.id").where("tasks.project_id IS NULL").count
+    return where.not(id: Task.pluck(:project_id)).count
   end
 
   def self.start_date_filter(date)
