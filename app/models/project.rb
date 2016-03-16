@@ -15,16 +15,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def self.total_open_projects
-    return where(status: "open").count
-  end
-
-  def self.total_done_projects
-    return where(status: "done").count
-  end
-
-  def self.total_canceled_projects
-    return where(status: "canceled").count
+  def self.project_status_count
+    return group(:status).count
   end
 
   def self.taskless_projects

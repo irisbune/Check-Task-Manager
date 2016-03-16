@@ -50,11 +50,8 @@ RSpec.describe Task, type: :model do
       @task7 = create(:task, duedate: Date.new(2018,02,12))
     end
     context "status summary" do
-      it "shows the total number of open tasks" do
-        expect(Task.done).to eq 2
-      end
-      it "shows the total number of completed tasks" do
-        expect(Task.not_done).to eq 5
+      it "returns a hash of task statusses count" do
+        expect(Task.status_count).to include(true => 2, false => 5)
       end
     end
 
