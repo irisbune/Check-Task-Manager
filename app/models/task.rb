@@ -30,12 +30,8 @@ class Task < ActiveRecord::Base
     return where(duedate: date_start..date_end)
   end
 
-  def self.done
-    return where(status: true).count
-  end
-
-  def self.not_done
-    return where(status: false).count
+  def self.status_count
+    return group(:status).count
   end
 
 end

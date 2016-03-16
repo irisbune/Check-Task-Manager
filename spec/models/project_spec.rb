@@ -71,7 +71,7 @@ RSpec.describe Project, type: :model do
     end
 
     context "status summary" do
-      it "gives a hash of the nr of project statusses" do
+      it "returns a hash of project statusses count" do
         expect(Project.project_status_count).to include('open' => 4, 'done' => 2, 'canceled' => 1)
       end
 
