@@ -22,4 +22,20 @@ class Task < ActiveRecord::Base
     end
   end
 
+  def self.duedate_filter(date)
+    return where(duedate: date)
+  end
+
+  def self.duedate_filter_range(date_start, date_end)
+    return where(duedate: date_start..date_end)
+  end
+
+  def self.done
+    return where(status: true).count
+  end
+
+  def self.not_done
+    return where(status: false).count
+  end
+
 end
