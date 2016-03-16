@@ -71,18 +71,10 @@ RSpec.describe Project, type: :model do
     end
 
     context "status summary" do
-      it "gives the total nr of open projects" do
-        expect(Project.total_open_projects).to eq 4
+      it "gives a hash of the nr of project statusses" do
+        expect(Project.project_status_count).to include('open' => 4, 'done' => 2, 'canceled' => 1)
       end
-      it "gives the total nr of done projects" do
-        expect(Project.total_done_projects).to eq 2
-      end
-      it "gives the total nr of canceled projects" do
-        expect(Project.total_canceled_projects).to eq 1
-      end
-      it "gives the total nr of projects without a task" do
-        expect(Project.taskless_projects).to eq 3
-      end
+
     end
 
     context "date filters" do
