@@ -42,7 +42,7 @@ RSpec.describe Task, type: :model do
     end
 
     it "is invalid without a project" do
-      task = build(:task, project_id: 400)
+      task = build(:task, project_id: nil)
       task.valid?
       expect(task.errors[:project_id]).to include("Project does not exist")
     end
