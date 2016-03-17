@@ -4,8 +4,6 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe "GET #index" do
 
-    context "on success" do
-
       before :each do
         @open_projects = create_list(:project_with_tasks, 3, :open)
         @done_projects = create_list(:project, 5, :done)
@@ -40,34 +38,47 @@ RSpec.describe ProjectsController, type: :controller do
           expect(project).to include('tasks')
         end
       end
-
-    end
-
   end
 
   describe "GET #show" do
-    it "returns a 200 response"
-    it "returns json"
-    it "lists one project and its tasks"
-    it "has a summary of all task statusses"
-    it "renders the :show template"
-  end
 
-  describe "GET #new" do
-    it "assigns a new Project to @project"
-    it "renders the :new template"
+    before :each do
+      @project = create(:project_with_tasks, :open)
+      get :show, format: 'json', id: @project
+      @json = JSON.parse(response.body)
+    end
+
+    context "on success" do
+
+      it "returns a 200 response" do
+        expect(response.status).to eq(200)
+      end
+
+      it "returns json" do
+        expect(response.header['Content-Type']).to include('application/json')
+      end
+
+      it "lists one project and its tasks" do
+        expect(@json['project']).to include('tasks')
+      end
+
+      it "has a summary of all task statusses" do
+        expect(@json['task_statusses']).to include('false'=> 4)
+      end
+    end
+
+    context "on failure" do
+      it "returns a 404 response" do
+      end
+    end
+
   end
 
   describe "POST #create" do
     it "saves a new project in the database"
     it "redirects to the new project's #show page"
     it "does not save the project to the database"
-    it "re-renders the :new page"
-  end
-
-  describe "GET #edit" do
-    it "assigns the requested project to @project"
-    it "renders the :edit template"
+    it "returns an error message"
   end
 
   describe "PATCH #update" do
@@ -75,13 +86,14 @@ RSpec.describe ProjectsController, type: :controller do
     it "changes the @project's attributes"
     it "redirects to the updated project"
     it "does not change the @project's attributes"
-    it "re-renders the :edit template"
+    it "returns an error message"
   end
 
   describe "DELETE #destroy" do
     it "locates the requested @project"
     it "deletes the @project from the database"
-    it "redirects to the :index template"
+    it "does not delete the @project from the database"
+    it "returns an error message"
   end
 
 end

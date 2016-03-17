@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+
   def index
     projects = Project.all
     statusses = Project.project_status_count
@@ -17,7 +18,13 @@ class ProjectsController < ApplicationController
 
   def show
     project = Project.find(params[:id])
-    render json: { project: project }
+    task_statusses = project.tasks.status_count
+    render json: {
+      task_statusses: task_statusses,
+      project: project.as_json({
+        include: :tasks
+        })
+    }
   end
 
   def create
