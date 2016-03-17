@@ -1,11 +1,17 @@
 class ProjectsController < ApplicationController
   def index
+    projects = Project.all
+    statusses = Project.project_status_count
+
     render json: {
       meta: {
-        count: Project.count,
+        count: projects.count,
         page: 0
       },
-      projects: Project.order(id: :desc)
+      project_statusses: statusses,
+      projects: projects.as_json({
+          include: :tasks
+        })
     }
   end
 

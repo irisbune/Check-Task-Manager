@@ -2,11 +2,28 @@ FactoryGirl.define do
   factory :project do
     name Faker::Hipster.sentence
     description Faker::Hipster.sentences
-    status "open"
     start_date Faker::Date.forward(30)
+
+    trait :open do
+      status "open"
+    end
+
+    trait :done do
+      status "done"
+    end
+
+    trait :canceled do
+      status "canceled"
+    end
 
     factory :invalid_project do
       name nil
+    end
+
+    factory :project_with_tasks do
+      after(:create) do |project|
+        create_list(:task, 4, project: project)
+      end
     end
   end
 

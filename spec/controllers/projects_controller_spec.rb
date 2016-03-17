@@ -3,12 +3,46 @@ require 'rails_helper'
 RSpec.describe ProjectsController, type: :controller do
 
   describe "GET #index" do
-    it "returns a 200 response"
-    it "returns json"
-    it "lists all projects"
-    it "has a summary of all project statusses"
-    it "includes the tasks per project"
-    it "renders the :index template"
+
+    context "on success" do
+
+      before :each do
+        @open_projects = create_list(:project_with_tasks, 3, :open)
+        @done_projects = create_list(:project, 5, :done)
+        @canceled_projects = create_list(:project, 2, :canceled)
+        get :index, format: 'json'
+        @json = JSON.parse(response.body)
+        # p @json
+      end
+
+      it "returns a 200 response" do
+        expect(response.status).to eq(200)
+        # or: expect(response).to be_success
+      end
+
+      it "returns json" do
+        expect(response.header['Content-Type']).to include('application/json')
+      end
+
+      it "lists all projects" do
+        # p @all_projects.count
+        # p @json['projects']
+        expect(@json['projects'].count).to eq(10)
+      end
+
+      it "has a summary of all project statusses" do
+        expect(@json['project_statusses']).to include('open'=> 3, 'done' => 5, 'canceled' => 2)
+      end
+
+      it "includes the tasks per project" do
+        @json['projects'].each do |project|
+          # p project['status']
+          expect(project).to include('tasks')
+        end
+      end
+
+    end
+
   end
 
   describe "GET #show" do
