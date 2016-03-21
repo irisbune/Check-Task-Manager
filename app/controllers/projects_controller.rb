@@ -28,13 +28,17 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    if project = Project.create(project_params)
+    project = Project.new(project_params)
+    # by instantiating the project before saving it enables testing the if and else blocks in the spec
+    # project.create evaluates to true when params are invalid, because it can still instantiate the object
+    # project.save evaluates to false when params are invalid, because it cannot save it to the db
+    if project.save
       render json: { project: project }
     else
       render json: {
         message: "Could not create project",
-        errors: project.errors,
-      }, status: :unprocessible_entity
+        errors: project.errors
+      }, status: :unprocessable_entity
     end
   end
 
@@ -46,8 +50,8 @@ class ProjectsController < ApplicationController
     else
       render json: {
         message: "Could not update project",
-        errors: project.errors,
-      }, status: :unprocessible_entity
+        errors: project.errors
+      }, status: :unprocessable_entity
     end
   end
 
@@ -58,14 +62,14 @@ class ProjectsController < ApplicationController
       render json: { project: nil }
     else
       render json: {
-        message: "Could not destroy project, please try again",
-      }, status: :unprocessible_entity
+        message: "Could not destroy project, please try again"
+      }, status: :unprocessable_entity
     end
   end
 
   private
 
   def project_params
-    params.require(:project).permit(:name, :description)
+    params.require(:project).permit(:name, :description, :start_date, :status)
   end
 end

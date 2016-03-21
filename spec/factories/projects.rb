@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :project do
     name Faker::Hipster.sentence
-    description Faker::Hipster.sentences
+    description Faker::Hipster.sentence
     start_date Faker::Date.forward(30)
 
     trait :open do
@@ -18,6 +18,7 @@ FactoryGirl.define do
 
     factory :invalid_project do
       name nil
+      start_date nil
     end
 
     factory :project_with_tasks do
