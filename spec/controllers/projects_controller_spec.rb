@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe ProjectsController, type: :controller do
 
   describe "GET #index" do
-
+    # let() = is not invoked and stored in memory until it is called
+    # let!() = is invoked and stored in memory immediately, as if it is a before :each block
     let!(:projects) do
       create_list(:project_with_tasks, 3, :open)
       create_list(:project, 5, :done)
@@ -11,7 +12,7 @@ RSpec.describe ProjectsController, type: :controller do
     end
 
     let!(:index){ get :index, format: 'json' }
-    let!(:json){ JSON.parse(response.body) }
+    let(:json){ JSON.parse(response.body) }
 
       it "returns a 200 response" do
         expect(response.status).to eq(200)
@@ -43,10 +44,10 @@ RSpec.describe ProjectsController, type: :controller do
     # using 'id: project' in let!(:show), invokes let(:project)
     let(:project){ create(:project_with_tasks, :open) }
     let!(:show){ get :show, format: 'json', id: project }
-    # don't fun the json in a before block, it should be invoked when it is needed (e.g. to test the 404)
+    # don't invoke the json in a before block, it should be invoked when it is needed (e.g. to test the 404)
     let(:json){ JSON.parse(response.body) }
 
-    context "on success" do
+    context "when valid" do
 
       it "returns a 200 response" do
         expect(response.status).to eq(200)
@@ -65,7 +66,7 @@ RSpec.describe ProjectsController, type: :controller do
       end
     end
 
-    context "on failure" do
+    context "when invalid" do
       it "returns a 404 message" do
         get :show, format: 'json', id: 1
         expect(json['status']).to eq(404)
@@ -80,7 +81,7 @@ RSpec.describe ProjectsController, type: :controller do
     let(:invalid_params){ attributes_for(:invalid_project) }
     let(:json){ JSON.parse(response.body) }
 
-    context "on success" do
+    context "when valid" do
       it "saves a new project in the database" do
         expect{post :create,
                     format: 'json',
@@ -95,7 +96,7 @@ RSpec.describe ProjectsController, type: :controller do
       end
     end
 
-    context "on failure" do
+    context "when invalid" do
       it "does not save the project to the database" do
         expect{post :create,
                     format: 'json',
@@ -113,15 +114,13 @@ RSpec.describe ProjectsController, type: :controller do
   end
 
   describe "PATCH #update" do
-    # let() = is not invoked and stored in memory until it is called
-    # let!() = is invoked and stored in memory immediately, as if it is a before :each block
-    let!(:project) { create(:project, :open) }
+    let(:project) { create(:project, :open) }
     let(:valid_params){ attributes_for(:project_with_tasks) }
     let(:invalid_params){ attributes_for(:invalid_project) }
 
-    context "on success" do
+    context "when valid" do
       it "locates the requested project" do
-        expect(Project).to receive(:find).with(project.id.to_s).and_call_original
+        expect(Project).to receive(:find).and_return(project)
         # receive()
         # with()
         # and_call_original
@@ -129,7 +128,8 @@ RSpec.describe ProjectsController, type: :controller do
       end
 
       it "returns a 200 response" do
-
+        patch :update, format: 'json', id: project, project: valid_params
+        expect(response.status).to eq(200)
       end
 
       it "changes the project's attributes" do
@@ -141,18 +141,68 @@ RSpec.describe ProjectsController, type: :controller do
       end
     end
 
-    context "on failure" do
-      it "does not change the project's attributes"
-      it "returns an error message"
+    context "when invalid" do
+
+      it "does not change the project's attributes" do
+        patch :update, format: 'json', id: project, project: invalid_params
+        project.reload
+        expect(project['name']).not_to eq(invalid_params['name'])
+        expect(project['start_date']).not_to eq(invalid_params['start_date'])
+      end
+
+      it "returns a 422 message" do
+        patch :update, format: 'json', id: project, project: invalid_params
+        json = JSON.parse(response.body)
+        expect(response.status).to eq(422)
+        expect(json['message']).to include("Could not update project")
+      end
     end
 
   end
 
   describe "DELETE #destroy" do
-    it "locates the requested project"
-    it "deletes the project from the database"
-    it "does not delete the project from the database"
-    it "returns an error message"
+    # using let!() here ensures that the :destroy test works. It fails if let() is used because the project isn't created yet
+    let!(:project) { create(:project, :open) }
+    let(:valid_params){ attributes_for(:project_with_tasks) }
+    let(:invalid_params){ attributes_for(:invalid_project) }
+
+    context "when valid" do
+
+      it "locates the requested project" do
+        expect(Project).to receive(:find).and_return(project)
+        delete :destroy, format: 'json', id: project
+      end
+
+      it "deletes the project from the database" do
+        expect{ delete :destroy, id: project }.to change(Project, :count).by(-1)
+      end
+
+      it "shows a confirmation message" do
+        delete :destroy, id: project
+        json = JSON.parse(response.body)
+        expect(json['message']).to include("The project was successfully deleted")
+      end
+
+    end
+
+    context "when invalid" do
+
+      it "does not delete the project from the database" do
+        project.id = 1
+        expect{ delete :destroy, id: project }.not_to change(Project, :count)
+      end
+
+      it "returns an error if the project wasn't found" do
+        project.id = 1
+        delete :destroy, id: project
+        json = JSON.parse(response.body)
+        expect(json['status']).to eq(404)
+      end
+
+      it "returns an error if the project was not deleted"
+
+    end
+
   end
 
 end

@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
 
   def create
     project = Project.new(project_params)
-    # by instantiating the project before saving it enables testing the if and else blocks in the spec
+    # by instantiating the project before saving it, enables testing the if and else blocks in the spec
     # project.create evaluates to true when params are invalid, because it can still instantiate the object
     # project.save evaluates to false when params are invalid, because it cannot save it to the db
     if project.save
@@ -57,12 +57,18 @@ class ProjectsController < ApplicationController
 
   def destroy
     project = Project.find(params[:id])
-
-    if project.destroy
-      render json: { project: nil }
+    # if the project cannot be found, a json with 404 and error message is returned
+    project.destroy
+    # destroy returns the object that was destroyed but in 'frozen' state
+    # destroyed? returns a boolean based on whether the object was destroyed or not
+    if project.destroyed?
+      render json: {
+        project: nil,
+        message: "The project was successfully deleted"
+      }
     else
       render json: {
-        message: "Could not destroy project, please try again"
+        message: "Could not delete project",
       }, status: :unprocessable_entity
     end
   end

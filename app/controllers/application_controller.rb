@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   def record_not_found
     render json: {
-      message: "Couldn't find that page",
+      message: "Couldn't find it",
       status: 404
     }
   end
