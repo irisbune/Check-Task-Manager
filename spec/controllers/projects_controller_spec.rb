@@ -120,10 +120,13 @@ RSpec.describe ProjectsController, type: :controller do
 
     context "when valid" do
       it "locates the requested project" do
-        expect(Project).to receive(:find).and_return(project)
-        # receive()
-        # with()
-        # and_call_original
+        # receive() with expect(); message expectation: object (Project) should receive a :message (from .find) during
+        # execution of this code example
+        # with(); expect message with an argument (project id)
+        # and_call_original 'pass through' the received :message, in this case :find, to the original method
+        # that is => Project.find(params[:id])
+        # then the patch method can run successfully
+        expect(Project).to receive(:find).with(project.id.to_s).and_call_original
         patch :update, format: 'json', id: project, project: valid_params
       end
 
@@ -169,7 +172,7 @@ RSpec.describe ProjectsController, type: :controller do
     context "when valid" do
 
       it "locates the requested project" do
-        expect(Project).to receive(:find).and_return(project)
+        expect(Project).to receive(:find).with(project.id.to_s).and_call_original
         delete :destroy, format: 'json', id: project
       end
 
@@ -199,7 +202,24 @@ RSpec.describe ProjectsController, type: :controller do
         expect(json['status']).to eq(404)
       end
 
-      it "returns an error if the project was not deleted"
+      it "returns an error if the project was not deleted" do
+        # allow(); tell the object to return a value in response to a given :message (:find / :destroy)
+        # and_return(project); method stub that returns the project object as value
+        # and_return(false); method stub that returns false when :destroy is called
+        allow(Project).to receive(:find).with(project.id.to_s).and_return(project)
+        allow(project).to receive(:destroy).and_return(false)
+
+        delete :destroy, id: project
+
+        # after running the actual delete method, the aforementioned values are expected
+        # and the else block in the controller is executed
+        expect(Project).to have_received(:find)
+        expect(project).to have_received(:destroy)
+
+        json = JSON.parse(response.body)
+        expect(json['message']).to include("Could not delete project")
+
+      end
 
     end
 
