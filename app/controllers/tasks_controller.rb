@@ -1,18 +1,10 @@
 class TasksController < ApplicationController
   before_action :set_project
 
-  def index
-     render json: {
-               meta: {
-                 count: @project.tasks.count
-               },
-               tasks: @project.tasks.all
-             }
-   end
 
   def create
     task = Task.new(task_params)
-    # todo.project = @project
+    
     if task.save
       render json: { task: task }
     else

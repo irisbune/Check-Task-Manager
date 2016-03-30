@@ -119,7 +119,7 @@ RSpec.describe ProjectsController, type: :controller do
     let(:invalid_params){ attributes_for(:invalid_project) }
 
     context "when valid" do
-      it "locates the requested project" do
+      it "finds the requested project by its id" do
         # receive() with expect(); message expectation: object (Project) should receive a :message (from .find) during
         # execution of this code example
         # with(); expect message with an argument (project id)
