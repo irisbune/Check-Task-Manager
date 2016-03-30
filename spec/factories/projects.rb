@@ -16,15 +16,29 @@ FactoryGirl.define do
       status "canceled"
     end
 
+    trait :in_same_month do
+      start_date Faker::Date.between(Date.new(2020,04,01), Date.new(2020,04,30))
+    end
+
+    trait :in_past do
+      start_date Date.yesterday
+    end
+
     factory :invalid_project do
       name nil
       start_date nil
     end
 
-    factory :project_with_tasks do
-      after(:create) do |project|
-        create_list(:task, 4, project: project)
+    trait :with_tasks do
+
+      transient do
+        number_of_tasks 4
       end
+
+      after(:create) do |project, evaluator|
+        create_list(:task, evaluator.number_of_tasks, project: project)
+      end
+
     end
   end
 

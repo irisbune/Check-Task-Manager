@@ -6,7 +6,7 @@ RSpec.describe ProjectsController, type: :controller do
     # let() = is not invoked and stored in memory until it is called
     # let!() = is invoked and stored in memory immediately, as if it is a before :each block
     let!(:projects) do
-      create_list(:project_with_tasks, 3, :open)
+      create_list(:project, 3, :open, :with_tasks, number_of_tasks: 5)
       create_list(:project, 5, :done)
       create_list(:project, 2, :canceled)
     end
@@ -42,7 +42,7 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe "GET #show" do
     # using 'id: project' in let!(:show), invokes let(:project)
-    let(:project){ create(:project_with_tasks, :open) }
+    let(:project){ create(:project, :open, :with_tasks) }
     let!(:show){ get :show, format: 'json', id: project }
     # don't invoke the json in a before block, it should be invoked when it is needed (e.g. to test the 404)
     let(:json){ JSON.parse(response.body) }
@@ -77,7 +77,7 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe "POST #create" do
 
-    let(:valid_params){ attributes_for(:project_with_tasks) }
+    let(:valid_params){ attributes_for(:project, :with_tasks) }
     let(:invalid_params){ attributes_for(:invalid_project) }
     let(:json){ JSON.parse(response.body) }
 
@@ -115,7 +115,7 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe "PATCH #update" do
     let(:project) { create(:project, :open) }
-    let(:valid_params){ attributes_for(:project_with_tasks) }
+    let(:valid_params){ attributes_for(:project, :with_tasks) }
     let(:invalid_params){ attributes_for(:invalid_project) }
 
     context "when valid" do
@@ -166,7 +166,7 @@ RSpec.describe ProjectsController, type: :controller do
   describe "DELETE #destroy" do
     # using let!() here ensures that the :destroy test works. It fails if let() is used because the project isn't created yet
     let!(:project) { create(:project, :open) }
-    let(:valid_params){ attributes_for(:project_with_tasks) }
+    let(:valid_params){ attributes_for(:project, :with_tasks) }
     let(:invalid_params){ attributes_for(:invalid_project) }
 
     context "when valid" do
