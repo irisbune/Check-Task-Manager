@@ -14,7 +14,7 @@ RSpec.describe ProjectsController, type: :controller do
     let!(:index){ get :index, format: 'json' }
     let(:json){ JSON.parse(response.body) }
 
-      it "returns a 200 response" do
+      it "returns a 200 response status" do
         expect(response.status).to eq(200)
         # or: expect(response).to be_success
       end
@@ -144,7 +144,7 @@ RSpec.describe ProjectsController, type: :controller do
       end
     end
 
-    context "when invalid" do
+    context  "when invalid" do
 
       it "does not change the project's attributes" do
         patch :update, format: 'json', id: project, project: invalid_params

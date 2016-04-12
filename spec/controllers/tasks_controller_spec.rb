@@ -7,7 +7,7 @@ RSpec.describe TasksController, type: :controller do
 
   describe "POST #create" do
 
-    let(:project){ create(:project) }
+    let!(:project){ create(:project) }
     let(:valid_params){ attributes_for(:task, project_id: project.id) }
     let(:invalid_params){ attributes_for(:invalid_task, project_id: project.id) }
     let(:json){ json = JSON.parse(response.body) }
@@ -44,9 +44,10 @@ RSpec.describe TasksController, type: :controller do
     context "when invalid" do
 
       it "returns a 422 status" do
-
+        post :create, format: 'json', task: invalid_params, project_id: project.id
+        p response.status
       end
-      
+
       it "does not save the task to the database"
       it "renders an error message"
     end

@@ -4,13 +4,13 @@ class TasksController < ApplicationController
 
   def create
     task = Task.new(task_params)
-    
+
     if task.save
       render json: { task: task }
     else
       render json: {
         message: "Could not create Task",
-        errors: task.errors,
+        errors: task.errors
       }, status: :unprocessible_entity
     end
   end

@@ -1,9 +1,14 @@
 class Task < ActiveRecord::Base
   belongs_to :project, required: true
-  validates :task_description, :duedate, presence: true
+
+  validates :task_description, presence: true
+  validates :duedate, format: { with: /\d{4}-\d{2}-\d{2}/,
+                                message: "format must be yyyy-mm-dd"},
+                                presence: true
   # validate status by excluding 'nil' by checking values true/false in array
-  validates_inclusion_of :status, in: [true, false], message: "can't be blank or anything other than true/false"
-  validates_format_of :duedate, with: /\d{4}-\d{2}-\d{2}/, :message => "must be in the following format: yyyy-mm-dd"
+
+  validates :status, inclusion: { in: [true, false],
+                                  message: "can't be blank or anything other than true/false"}
 
   validate :valid_date
   validate :valid_project

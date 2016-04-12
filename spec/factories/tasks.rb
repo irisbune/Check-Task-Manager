@@ -20,8 +20,6 @@ FactoryGirl.define do
     factory :invalid_task do
       task_description nil
       duedate nil
-      status nil
-      project_id nil
     end
 
 

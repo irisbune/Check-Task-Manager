@@ -4,7 +4,7 @@ RSpec.describe Task, type: :model do
 
   describe "validations" do
 
-    let(:task){ build(:task, :open) }
+    let(:task){ build(:task) }
     let(:invalid_task){ build(:invalid_task) }
     let(:task_in_past){ build(:task, :in_past) }
 
@@ -28,11 +28,13 @@ RSpec.describe Task, type: :model do
     end
 
     it "is invalid without a status boolean" do
+      invalid_task.status = nil
       invalid_task.valid?
       expect(invalid_task.errors[:status]).to include("can't be blank or anything other than true/false")
     end
 
     it "is invalid without a project" do
+      invalid_task.project_id = nil
       invalid_task.valid?
       expect(invalid_task.errors[:project_id]).to include("Project does not exist")
     end
@@ -43,7 +45,7 @@ RSpec.describe Task, type: :model do
 
     let!(:tasks) do
       create_list(:task, 4, :completed)
-      create_list(:task, 2, :open, :tomorrow)
+      create_list(:task, 2, :tomorrow)
     end
 
     context "status summary" do
