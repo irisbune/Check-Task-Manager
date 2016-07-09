@@ -22,7 +22,7 @@ We managed to add some tests to validate a task's due dates.
 
 ### Todos
 My personal goal is to add:
-- Complete specs for current functionality, incl. views.
+- Complete specs for current functionality.
 - User Model
   - Features:
       - invite users to projects

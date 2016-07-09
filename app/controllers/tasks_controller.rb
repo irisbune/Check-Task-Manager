@@ -1,24 +1,16 @@
 class TasksController < ApplicationController
   before_action :set_project
 
-  def index
-     render json: {
-               meta: {
-                 count: @project.tasks.count
-               },
-               tasks: @project.tasks.all
-             }
-   end
 
   def create
     task = Task.new(task_params)
-    # todo.project = @project
+
     if task.save
       render json: { task: task }
     else
       render json: {
         message: "Could not create Task",
-        errors: task.errors,
+        errors: task.errors
       }, status: :unprocessible_entity
     end
   end

@@ -9,6 +9,8 @@ class Project < ActiveRecord::Base
                                   message: "is not a valid status"},
                                   presence: true
 
+private
+
   def valid_start_date?
     if start_date.present? && start_date.past?
       errors.add(:start_date, "can't be in the past")
